@@ -255,7 +255,6 @@ async function getPlayers() {
   })
   const jsonRes = await response.json();
   return jsonRes
-  
 }
 
 async function getTotals() {
