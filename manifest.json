@@ -1,0 +1,23 @@
+{
+    "description": "Reports about fifa 23 UT",
+    "manifest_version": 2,
+    "name": "Fifa Reports",
+    "version": "1.0",
+    "icons": {
+        "128": "icons/128.png"
+    },
+    "background": {
+        "scripts": [
+            "service/interceptor.js"
+        ]
+    },
+    "permissions": [
+        "tabs",
+        "http://*/*",
+        "https://*/*",
+        "webRequest"
+    ],
+    "browser_action": {
+        "default_popup": "popup/index.html"
+    }
+}
