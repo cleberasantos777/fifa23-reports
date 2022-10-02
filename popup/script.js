@@ -218,6 +218,9 @@ var nationsMap = new Map(Object.entries({
 var nomes = []
 
 var count = 250
+var start = 0
+var totalPlayers = 0
+var totalPlayers2 = 10
 
 var listaArrayPais = new Array()
 var listaSetPais = new Set()
@@ -238,7 +241,7 @@ function mudarTexto(id, novoTexto) {
   document.getElementById(id).innerHTML = novoTexto;
 }
 
-async function getPlayers() {
+async function getPlayers(start) {
   const response = await fetch('https://utas.mob.v1.fut.ea.com/ut/game/fifa23/club', {
     method: 'POST',
     headers: {
@@ -249,7 +252,7 @@ async function getPlayers() {
       count: count,
       sort: 'desc',
       sortBy: 'value',
-      start: 0,
+      start: start,
       type: 'player'
     }),
   })
@@ -274,7 +277,8 @@ async function relatorioTotals() {
   await getTotals().then(json => {
     json.stat.map(el => {
       if (el.type == 'players') {
-        mudarTexto("totals", 'Total de Jogadores: ' + el.typeValue)
+        totalPlayers = el.typeValue
+        mudarTexto("totals", 'Total de Jogadores: ' + totalPlayers)
       }
     })
   });
@@ -282,38 +286,32 @@ async function relatorioTotals() {
 }
 
 //----------- Requisição dos paises ---------------------
-async function relatorioPaises() {
+async function relatorioPaises(start) {
 
-  await getPlayers().then(json => {
-    json.itemData.map(el => {
-      listaSetPais.add(el.nation)
-      listaArrayPais.push(el.nation)
+  await getTotals()
+
+  for (let i = 256; i <= totalPlayers; i++) {
+    await getPlayers(0).then(json => {
+      json.itemData.map(el => {
+        listaSetPais.add(el.nation)
+        listaArrayPais.push(el.nation)
+      })
     })
-  });
+   
+  }
 
   codPais = Array.from(listaSetPais)
   codPais.sort((a, b) => a - b)
 
-  var tst = [{ 10: 'teste' }]
-
   for (let i = 0; i < codPais.length; i++) {
 
     qtdPais.push(listaArrayPais.filter(n => n == codPais[i]).length)
-
-    for (let j = 0; j < tst.length; j++) {
-
-      if (codPais[j] == tst[j].key) {
-        codPais.push(tst[j].value)
-      }
-
-    }
 
     for (const [k, v] of nationsMap) {
       if (k == codPais[i]) {
         nomes.push(v)
       }
     }
-
   }
 
   // Preenchendo a tabela
