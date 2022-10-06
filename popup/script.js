@@ -215,16 +215,14 @@ var nationsMap = new Map(Object.entries({
   148: "Zimbabwe"
 }))
 
-var nomes = []
-
 var count = 250
 var start = 0
 var totalPlayers = 0
-var totalPlayers2 = 10
 
 var listaArrayPais = new Array()
 var listaSetPais = new Set()
 var codPais = new Array()
+var nomePais = new Array()
 var qtdPais = new Array()
 
 var listaArrayLiga = new Array()
@@ -290,32 +288,84 @@ async function relatorioPaises(start) {
 
   await getTotals()
 
-  for (let i = 256; i <= totalPlayers; i++) {
+  // for (let i = 256; i <= totalPlayers; i++) {
+  //   await getPlayers(0).then(json => {
+  //     json.itemData.map(el => {
+  //       listaSetPais.add(el.nation)
+  //       listaArrayPais.push(el.nation)
+  //     })
+  //   })   
+  // }
+
+  // Preenche a lista de players por país
+  if (totalPlayers <= 250) {
     await getPlayers(0).then(json => {
       json.itemData.map(el => {
         listaSetPais.add(el.nation)
         listaArrayPais.push(el.nation)
       })
     })
-   
+  } else if (totalPlayers > 250 && totalPlayers <= 500) {
+
+    await getPlayers(0).then(json => {
+      json.itemData.map(el => {
+        listaSetPais.add(el.nation)
+        listaArrayPais.push(el.nation)
+      })
+    })
+
+    await getPlayers(250).then(json => {
+      json.itemData.map(el => {
+        listaSetPais.add(el.nation)
+        listaArrayPais.push(el.nation)
+      })
+    })
+
+  } else if (totalPlayers > 500 && totalPlayers <= 750) {
+
+    await getPlayers(0).then(json => {
+      json.itemData.map(el => {
+        listaSetPais.add(el.nation)
+        listaArrayPais.push(el.nation)
+      })
+    })
+
+    await getPlayers(250).then(json => {
+      json.itemData.map(el => {
+        listaSetPais.add(el.nation)
+        listaArrayPais.push(el.nation)
+      })
+    })
+
+    await getPlayers(500).then(json => {
+      json.itemData.map(el => {
+        listaSetPais.add(el.nation)
+        listaArrayPais.push(el.nation)
+      })
+    })
+
   }
 
+  // Converte set em array e ordena por código(crescente)
   codPais = Array.from(listaSetPais)
-  codPais.sort((a, b) => a - b)
 
+  // Ordena a lista
+  //codPais.sort((a, b) => a - b)
+  // qtdPais.sort()
+
+  // Faz De/Para Cód. País para Nome País
   for (let i = 0; i < codPais.length; i++) {
 
     qtdPais.push(listaArrayPais.filter(n => n == codPais[i]).length)
 
     for (const [k, v] of nationsMap) {
       if (k == codPais[i]) {
-        nomes.push(v)
+        nomePais.push(v)
       }
     }
   }
 
   // Preenchendo a tabela
-
   let tbody = document.getElementById('tbody')
 
   for (let i = 0; i < codPais.length; i++) {
@@ -324,7 +374,7 @@ async function relatorioPaises(start) {
     let tdnomes = tr.insertCell()
     let tdNomePais = tr.insertCell()
 
-    tdnomes.innerText = nomes[i]
+    tdnomes.innerText = nomePais[i]
     tdNomePais.innerText = qtdPais[i]
 
   }
